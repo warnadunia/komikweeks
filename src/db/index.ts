@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config({ path: [".env.local", ".env"] });
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 
@@ -10,7 +12,6 @@ const globalForDb = globalThis as typeof globalThis & {
 };
 
 const isCloudPostgres =
-  process.env.NODE_ENV === "production" &&
   Boolean(databaseUrl) &&
   !databaseUrl.includes("localhost") &&
   !databaseUrl.includes("127.0.0.1");
