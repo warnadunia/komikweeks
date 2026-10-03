@@ -5,6 +5,7 @@ import { upsertSeries, type FormState } from "@/lib/admin-actions";
 import type { MediaItem } from "@/lib/media";
 import { ActionForm } from "@/components/admin/action-form";
 import { CheckRow, Field, inputCls, SectionCard } from "@/components/admin/fields";
+import { R2Uploader } from "@/components/admin/r2-uploader";
 
 export type SeriesFormDefaults = {
   id?: number;
@@ -134,20 +135,49 @@ export function SeriesForm({
         </div>
       </SectionCard>
 
-      <SectionCard title="Sampul" accent="#35E0FF" desc="pilih dari pustaka media /public">
+      <SectionCard title="Sampul" accent="#35E0FF" desc="unggah ke Cloudflare R2 atau pilih dari media">
         <div className="flex flex-col gap-4 sm:flex-row">
-          <div className="flex-1">
-            <Field label="Gambar Sampul" hint="Tambahkan file ke public/covers untuk pilihan baru (lengkapi dimensinya di src/lib/media.ts)">
-              <select name="coverImage" value={cover} onChange={(e) => setCover(e.target.value)} className={inputCls}>
-                {media.map((m) => (
-                  <option key={m.src} value={m.src}>{m.label}</option>
-                ))}
-              </select>
+          <div className="flex flex-1 flex-col gap-3">
+            <Field label="URL Gambar Sampul" hint="URL Cloudflare R2 atau path lokal (/covers/...)">
+              <input
+                type="text"
+                name="coverImage"
+                value={cover}
+                onChange={(e) => setCover(e.target.value)}
+                placeholder="https://.../covers/... atau /covers/..."
+                className={inputCls}
+                required
+              />
             </Field>
+            {media.length > 0 && (
+              <Field label="Pilih dari Media Lokal">
+                <select
+                  value={media.some((m) => m.src === cover) ? cover : ""}
+                  onChange={(e) => e.target.value && setCover(e.target.value)}
+                  className={inputCls}
+                >
+                  <option value="">— Pilih aset yang tersedia —</option>
+                  {media.map((m) => (
+                    <option key={m.src} value={m.src}>
+                      {m.label}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+            )}
+            <R2Uploader
+              folder="covers"
+              label="Unggah Sampul ke Cloudflare R2 (Otomatis WebP 80%)"
+              onSuccess={(results) => {
+                if (results[0]) {
+                  setCover(results[0].publicUrl);
+                }
+              }}
+            />
           </div>
           {cover && (
             <div
-              className="aspect-[768/1376] w-28 shrink-0 border-2 border-paper bg-cover bg-center"
+              className="aspect-[768/1376] w-28 shrink-0 border-2 border-paper bg-cover bg-center shadow-[4px_4px_0_#35E0FF]"
               style={{ backgroundImage: `url(${cover})` }}
             />
           )}

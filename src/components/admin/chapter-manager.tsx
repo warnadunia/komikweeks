@@ -7,6 +7,7 @@ import type { MediaItem } from "@/lib/media";
 import { deleteChapter, upsertChapter } from "@/lib/admin-actions";
 import { ActionForm, DeleteButton } from "@/components/admin/action-form";
 import { CheckRow, Field, inputCls, SectionCard } from "@/components/admin/fields";
+import { R2Uploader } from "@/components/admin/r2-uploader";
 
 export type ChapterRow = {
   id: number;
@@ -56,12 +57,15 @@ export function PagesEditor({
   inputName?: string;
 }) {
   const [pages, setPages] = useState<PageSlice[]>(initialPages);
-  const [genSrc, setGenSrc] = useState(media.find((m) => m.w && m.h)?.src ?? media[0]?.src ?? "");
+  const [availableMedia, setAvailableMedia] = useState<MediaItem[]>(media);
+  const [genSrc, setGenSrc] = useState(
+    media.find((m) => m.w && m.h)?.src ?? media[0]?.src ?? "",
+  );
   const [genCount, setGenCount] = useState(5);
   const [genFrom, setGenFrom] = useState(1);
   const [genTo, setGenTo] = useState(3);
 
-  const genMedia = media.find((m) => m.src === genSrc);
+  const genMedia = availableMedia.find((m) => m.src === genSrc);
 
   const addGenerated = () => {
     if (!genMedia?.w || !genMedia.h) return;
@@ -70,8 +74,13 @@ export function PagesEditor({
     const sliceH = genMedia.h / genCount;
     const next: PageSlice[] = [];
     for (let k = from - 1; k <= to - 1; k++) {
-      const pos = genCount === 1 ? 0 : Math.round((100 * k) / (genCount - 1) * 10000) / 10000;
-      next.push({ src: genMedia.src, pos, ar: `${genMedia.w}/${Math.round(sliceH * 1000) / 1000}` });
+      const pos =
+        genCount === 1 ? 0 : Math.round(((100 * k) / (genCount - 1)) * 10000) / 10000;
+      next.push({
+        src: genMedia.src,
+        pos,
+        ar: `${genMedia.w}/${Math.round(sliceH * 1000) / 1000}`,
+      });
     }
     setPages((p) => [...p, ...next]);
   };
@@ -97,38 +106,117 @@ export function PagesEditor({
         </p>
         <button
           type="button"
-          onClick={() => setPages((p) => [...p, { src: media[0]?.src ?? "", pos: 50, ar: "16/9" }])}
+          onClick={() =>
+            setPages((p) => [
+              ...p,
+              { src: availableMedia[0]?.src ?? "", pos: 50, ar: "16/9" },
+            ])
+          }
           className="inline-flex cursor-pointer items-center gap-1.5 border-2 border-paper/40 px-2.5 py-1.5 font-mono text-[9px] font-bold tracking-widest text-paper/70 uppercase hover:border-acid hover:text-acid"
         >
           <Plus className="size-3" /> Halaman Manual
         </button>
       </div>
 
+      {/* R2 Uploader Box */}
+      <div className="mt-3">
+        <R2Uploader
+          folder="chapters"
+          multiple
+          label="Unggah Halaman Komik ke Cloudflare R2 (Otomatis WebP 80%)"
+          onSuccess={(results) => {
+            const newMediaList: MediaItem[] = results.map((r) => ({
+              src: r.publicUrl,
+              label: `[R2] ${r.key.split("/").pop()} (${r.width}×${r.height})`,
+              w: r.width,
+              h: r.height,
+            }));
+            setAvailableMedia((prev) => [...newMediaList, ...prev]);
+
+            // Jika belum ada genSrc terpilih yang punya dimensi, jadikan yang baru
+            if (results[0]) {
+              setGenSrc(results[0].publicUrl);
+            }
+
+            // Tambahkan langsung ke daftar halaman bab
+            const newPages: PageSlice[] = results.map((r) => ({
+              src: r.publicUrl,
+              pos: 50,
+              ar: r.aspectRatio,
+            }));
+            setPages((p) => [...p, ...newPages]);
+          }}
+        />
+      </div>
+
       {pages.length > 0 && (
-        <ul className="mt-3 flex flex-col gap-2">
+        <ul className="mt-4 flex flex-col gap-2">
           {pages.map((pg, i) => {
-            const m = media.find((x) => x.src === pg.src);
+            const m = availableMedia.find((x) => x.src === pg.src);
             return (
-              <li key={i} className="flex items-center gap-2 border-2 border-paper/15 bg-ink p-2">
+              <li
+                key={i}
+                className="flex items-center gap-2 border-2 border-paper/15 bg-ink p-2"
+              >
                 <div className="flex shrink-0 flex-col">
-                  <button type="button" onClick={() => move(i, -1)} className="cursor-pointer px-1 text-[9px] text-paper/50 hover:text-acid">▲</button>
-                  <span className="flex size-7 items-center justify-center font-mono text-[10px] font-bold text-paper/60">{i + 1}</span>
-                  <button type="button" onClick={() => move(i, 1)} className="cursor-pointer px-1 text-[9px] text-paper/50 hover:text-acid">▼</button>
+                  <button
+                    type="button"
+                    onClick={() => move(i, -1)}
+                    className="cursor-pointer px-1 text-[9px] text-paper/50 hover:text-acid"
+                  >
+                    ▲
+                  </button>
+                  <span className="flex size-7 items-center justify-center font-mono text-[10px] font-bold text-paper/60">
+                    {i + 1}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => move(i, 1)}
+                    className="cursor-pointer px-1 text-[9px] text-paper/50 hover:text-acid"
+                  >
+                    ▼
+                  </button>
                 </div>
-                <div className="h-14 w-16 shrink-0 border border-paper/25 bg-cover" style={{ backgroundImage: `url(${pg.src})`, backgroundPosition: `50% ${pg.pos}%`, backgroundSize: "100% auto" }} />
+                <div
+                  className="h-14 w-16 shrink-0 border border-paper/25 bg-cover"
+                  style={{
+                    backgroundImage: `url(${pg.src})`,
+                    backgroundPosition: `50% ${pg.pos}%`,
+                    backgroundSize: "100% auto",
+                  }}
+                />
                 <div className="grid min-w-0 flex-1 grid-cols-[1fr_auto_auto] items-end gap-2">
-                  <Field label="Gambar">
-                    <select value={pg.src} onChange={(e) => update(i, { src: e.target.value })} className={`${inputCls} py-1.5 text-xs`}>
-                      {media.map((opt) => (
-                        <option key={opt.src} value={opt.src}>{opt.label}</option>
+                  <Field label="Sumber Gambar">
+                    <select
+                      value={pg.src}
+                      onChange={(e) => update(i, { src: e.target.value })}
+                      className={`${inputCls} py-1.5 text-xs`}
+                    >
+                      {availableMedia.map((opt) => (
+                        <option key={opt.src} value={opt.src}>
+                          {opt.label}
+                        </option>
                       ))}
+                      {!availableMedia.some((opt) => opt.src === pg.src) && (
+                        <option value={pg.src}>{pg.src}</option>
+                      )}
                     </select>
                   </Field>
                   <Field label="Pos %">
-                    <input type="number" step="0.01" value={pg.pos} onChange={(e) => update(i, { pos: Number(e.target.value) })} className={`${inputCls} w-20 py-1.5 text-xs`} />
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={pg.pos}
+                      onChange={(e) => update(i, { pos: Number(e.target.value) })}
+                      className={`${inputCls} w-20 py-1.5 text-xs`}
+                    />
                   </Field>
                   <Field label="Rasio (w/h)">
-                    <input value={pg.ar} onChange={(e) => update(i, { ar: e.target.value })} className={`${inputCls} w-24 py-1.5 text-xs${m ? "" : " text-brand"}`} />
+                    <input
+                      value={pg.ar}
+                      onChange={(e) => update(i, { ar: e.target.value })}
+                      className={`${inputCls} w-24 py-1.5 text-xs${m ? "" : " text-brand"}`}
+                    />
                   </Field>
                 </div>
                 <button
@@ -152,10 +240,15 @@ export function PagesEditor({
         </p>
         <div className="mt-2.5 grid grid-cols-2 items-end gap-2 sm:grid-cols-[1fr_auto_auto_auto_auto]">
           <Field label="Gambar strip">
-            <select value={genSrc} onChange={(e) => setGenSrc(e.target.value)} className={`${inputCls} py-1.5 text-xs`}>
-              {media.map((opt) => (
+            <select
+              value={genSrc}
+              onChange={(e) => setGenSrc(e.target.value)}
+              className={`${inputCls} py-1.5 text-xs`}
+            >
+              {availableMedia.map((opt) => (
                 <option key={opt.src} value={opt.src} disabled={!opt.w}>
-                  {opt.label}{opt.w ? ` (${opt.w}×${opt.h})` : " (dimensi ?)"}
+                  {opt.label}
+                  {opt.w ? ` (${opt.w}×${opt.h})` : " (dimensi ?)"}
                 </option>
               ))}
             </select>
