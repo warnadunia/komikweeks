@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ArrowUpRight, Calendar, Globe, Plus, Tag } from "lucide-react";
 import Link from "next/link";
 import { getAllPostsAdmin } from "@/lib/queries";
-import { POST_CATEGORIES } from "@/components/admin/post-form";
+import { POST_CATEGORIES } from "@/lib/blog-constants";
 
 export const dynamic = "force-dynamic";
 

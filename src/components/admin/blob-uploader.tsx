@@ -2,7 +2,6 @@
 
 import { CheckCircle2, CloudUpload, FileImage, Loader2, Sparkles, X } from "lucide-react";
 import { useRef, useState } from "react";
-import imageCompression from "browser-image-compression";
 import { upload } from "@vercel/blob/client";
 
 export interface BlobUploadResult {
@@ -117,6 +116,7 @@ export function BlobUploader({
 
       try {
         // 2. Kompresi gambar di browser pengguna
+        const imageCompression = (await import("browser-image-compression")).default;
         const compressedFile = await imageCompression(item.file, compressionOptions);
 
         // Ambil dimensi asli untuk kalkulasi aspek rasio komik

@@ -4,7 +4,7 @@ import { Calendar, ChevronRight, Filter, Globe, Newspaper, Search, Tag } from "l
 import Link from "next/link";
 import { useState } from "react";
 import type { PostCardData } from "@/lib/queries";
-import { POST_CATEGORIES } from "@/components/admin/post-form";
+import { POST_CATEGORIES } from "@/lib/blog-constants";
 
 export function BlogExplorer({
   initialPosts,

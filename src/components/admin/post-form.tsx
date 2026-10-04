@@ -6,6 +6,8 @@ import { upsertPost, type FormState } from "@/lib/admin-actions";
 import { ActionForm } from "@/components/admin/action-form";
 import { CheckRow, Field, inputCls, SectionCard } from "@/components/admin/fields";
 import { BlobUploader } from "@/components/admin/blob-uploader";
+import { POST_CATEGORIES } from "@/lib/blog-constants";
+export { POST_CATEGORIES };
 
 export type PostFormDefaults = {
   id?: number;
@@ -19,13 +21,6 @@ export type PostFormDefaults = {
   author?: string;
   isPublished?: boolean;
 };
-
-export const POST_CATEGORIES = [
-  { value: "general", label: "General / Portal Umum" },
-  { value: "kegiatan", label: "Kegiatan & Jadwal Event" },
-  { value: "pengumuman", label: "Pengumuman Resmi" },
-  { value: "liputan", label: "Liputan & Dokumentasi" },
-];
 
 function slugify(v: string) {
   return v

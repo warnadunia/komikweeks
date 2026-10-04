@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteNav } from "@/components/site-nav";
-import { POST_CATEGORIES } from "@/components/admin/post-form";
+import { POST_CATEGORIES } from "@/lib/blog-constants";
 import { getPostBySlug, getPublishedPosts } from "@/lib/queries";
 
 export const dynamic = "force-dynamic";
