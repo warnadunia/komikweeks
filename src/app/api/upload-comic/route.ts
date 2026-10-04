@@ -2,6 +2,10 @@ import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { NextResponse } from "next/server";
 import { getAdminUser } from "@/lib/auth";
 
+const BLOB_TOKEN =
+  process.env.BLOB_READ_WRITE_TOKEN ||
+  "vercel_blob_rw_8n6PN0ekjPWYUNOx_ftswroj161WYLXKTZKEf2Q2yebLhOk";
+
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request): Promise<NextResponse> {
@@ -11,6 +15,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     const jsonResponse = await handleUpload({
       body,
       request,
+      token: BLOB_TOKEN,
       onBeforeGenerateToken: async (pathname) => {
         // Validasi hak akses admin
         const admin = await getAdminUser();
