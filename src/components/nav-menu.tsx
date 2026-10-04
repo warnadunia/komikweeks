@@ -5,6 +5,7 @@ import { Coins, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { ClaimWelcomeButton } from "@/components/wallet-client";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function NavMenuButton({
   links,
@@ -41,9 +42,12 @@ export function NavMenuButton({
                 <span>→</span>
               </Link>
             ))}
-            <div className="mt-1 flex items-center gap-2 border-t-2 border-dashed border-paper/20 pt-3">
-              <Coins className="size-4 text-acid" />
-              <ClaimWelcomeButton label="Klaim 100 Koin Tinta" />
+            <div className="mt-1 flex flex-col gap-2 border-t-2 border-dashed border-paper/20 pt-3">
+              <ThemeToggle showLabel className="w-full justify-center py-2" />
+              <div className="flex items-center gap-2">
+                <Coins className="size-4 text-acid shrink-0" />
+                <ClaimWelcomeButton label="Klaim 100 Koin Tinta" />
+              </div>
             </div>
           </motion.div>
         )}

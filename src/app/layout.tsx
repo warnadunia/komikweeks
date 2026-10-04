@@ -45,7 +45,29 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="id" className={`${archivo.variable} ${archivoBlack.variable} ${spaceMono.variable} ${marker.variable}`}>
+    <html
+      lang="id"
+      suppressHydrationWarning
+      className={`${archivo.variable} ${archivoBlack.variable} ${spaceMono.variable} ${marker.variable}`}
+    >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                const t = localStorage.getItem("theme");
+                if (t === "light") {
+                  document.documentElement.classList.add("light");
+                  document.documentElement.setAttribute("data-theme", "light");
+                } else {
+                  document.documentElement.classList.remove("light");
+                  document.documentElement.setAttribute("data-theme", "dark");
+                }
+              } catch (_) {}
+            `,
+          }}
+        />
+      </head>
       <body className="noise bg-ink font-sans text-paper antialiased">{children}</body>
     </html>
   );

@@ -4,6 +4,7 @@ import { getFeaturedEvent, getWallet } from "@/lib/queries";
 import { getVisitorKey } from "@/lib/visitor";
 import { ClaimWelcomeButton, WalletBadge } from "@/components/wallet-client";
 import { NavMenuButton } from "@/components/nav-menu";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function ComicWeekLogo({ href = "/" }: { href?: string }) {
   return (
@@ -53,6 +54,7 @@ export async function SiteNav() {
           ))}
         </nav>
         <div className="flex items-center gap-2">
+          <ThemeToggle />
           {wallet && Number(wallet.coins) > 0 ? (
             <Link href="/comics">
               <WalletBadge coins={wallet.coins} />

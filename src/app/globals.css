@@ -1,11 +1,6 @@
 @import "tailwindcss";
 
-@theme {
-  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-archivo-black), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-space-mono), ui-monospace, monospace;
-  --font-marker: var(--font-marker), cursive;
-
+:root {
   --color-ink: #0a0a0e;
   --color-ink-soft: #14141b;
   --color-ink-line: #23232e;
@@ -15,6 +10,36 @@
   --color-acid: #c9f73a;
   --color-vio: #8b5cf6;
   --color-sky: #35e0ff;
+}
+
+html.light,
+[data-theme="light"] {
+  --color-ink: #fcf9f2;
+  --color-ink-soft: #ede6d6;
+  --color-ink-line: #d8cebc;
+  --color-paper: #101016;
+  --color-paper-dim: #2e2e38;
+  --color-brand: #ff4d00;
+  --color-acid: #82b800;
+  --color-vio: #7c3aed;
+  --color-sky: #0284c7;
+}
+
+@theme {
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-archivo-black), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-space-mono), ui-monospace, monospace;
+  --font-marker: var(--font-marker), cursive;
+
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-ink-line: var(--color-ink-line);
+  --color-paper: var(--color-paper);
+  --color-paper-dim: var(--color-paper-dim);
+  --color-brand: var(--color-brand);
+  --color-acid: var(--color-acid);
+  --color-vio: var(--color-vio);
+  --color-sky: var(--color-sky);
 
   --animate-marquee: marquee 30s linear infinite;
   --animate-marquee-fast: marquee 18s linear infinite;
@@ -44,6 +69,7 @@ body {
   background-color: var(--color-ink);
   color: var(--color-paper);
   overflow-x: hidden;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 ::selection {
@@ -60,6 +86,26 @@ body {
     transparent 1.5px
   );
   background-size: 14px 14px;
+}
+
+html.light .halftone-dark {
+  background-image: radial-gradient(
+    circle,
+    rgba(16, 16, 22, 0.12) 1.1px,
+    transparent 1.5px
+  );
+}
+
+html.light .halftone-lg {
+  background-image: radial-gradient(
+    circle,
+    rgba(16, 16, 22, 0.15) 2px,
+    transparent 2.6px
+  );
+}
+
+html.light .noise::after {
+  opacity: 0.02;
 }
 
 .halftone-accent {

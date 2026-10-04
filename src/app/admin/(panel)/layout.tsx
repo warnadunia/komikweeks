@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { ExternalLink, LogOut, SquarePen } from "lucide-react";
 import Link from "next/link";
 import { AdminNav } from "@/components/admin/admin-nav";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { logoutAdmin } from "@/lib/admin-actions";
 import { requireAdmin } from "@/lib/auth";
 
@@ -55,6 +56,7 @@ export default async function AdminPanelLayout({ children }: { children: ReactNo
               </button>
             </form>
           </div>
+          <ThemeToggle showLabel className="mt-2 w-full justify-center" />
           <Link
             href="/"
             className="mt-2 flex items-center justify-center gap-2 border-2 border-paper/25 px-3 py-2.5 font-mono text-[10px] font-bold tracking-widest text-paper/60 uppercase transition-colors hover:border-acid hover:text-acid"
@@ -74,6 +76,7 @@ export default async function AdminPanelLayout({ children }: { children: ReactNo
             <span className="font-display text-sm text-paper">REDAKSI</span>
           </Link>
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             <Link href="/" className="flex size-9 items-center justify-center border-2 border-paper/30 text-paper/60">
               <ExternalLink className="size-4" />
             </Link>

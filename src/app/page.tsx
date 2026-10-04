@@ -325,20 +325,31 @@ export default async function HomePage() {
 
       {/* ------------------------------- BIG CTA ------------------------------- */}
       {featured?.status === "upcoming" && (featured.tickets?.[1] ?? null) && (
-        <section className="stripes-danger border-y-4 border-ink">
-          <div className="bg-ink/30 px-4 py-16 backdrop-blur-[2px] sm:px-6">
+        <section className="stripes-danger relative border-y-4 border-paper py-14 sm:py-20">
+          <div className="mx-auto max-w-4xl px-4 sm:px-6">
             <Reveal>
-              <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
-                <p className="font-marker text-2xl text-ink">jangan jadi penonton epilog —</p>
-                <h2 className="mt-2 font-display text-4xl text-ink uppercase drop-shadow-[3px_3px_0_rgba(245,241,232,0.9)] sm:text-6xl">
-                  Amankan Kursimu di {featured.theme}
-                </h2>
-                <div className="mt-8 w-full max-w-sm">
-                  <TicketBuyButton tierName="Weekend Pass" />
+              <div className="relative border-4 border-paper bg-ink p-7 sm:p-12 text-center shadow-[10px_10px_0_var(--color-acid)]">
+                <div className="absolute -top-3.5 left-6 border-2 border-ink bg-acid px-3 py-0.5 font-mono text-[10px] font-black tracking-widest text-ink uppercase shadow-[2px_2px_0_#000]">
+                  TIKET RESMI FESTIVAL
                 </div>
-                <Link href={`/events/${featured.slug}#tiket`} className="mt-4 font-mono text-xs font-bold tracking-widest text-ink underline underline-offset-4">
-                  Lihat semua paket tiket →
-                </Link>
+                <p className="font-marker text-2xl text-acid sm:text-3xl">jangan jadi penonton epilog —</p>
+                <h2 className="mt-3 font-display text-3xl sm:text-5xl lg:text-6xl uppercase tracking-tight text-paper leading-[1.05]">
+                  Amankan Kursimu di <span className="text-acid">{featured.theme}</span>
+                </h2>
+                <p className="mx-auto mt-4 max-w-lg font-mono text-xs tracking-wider text-paper/70 uppercase">
+                  Tiket presale terbatas • Akses panggung utama, workshop komik & art exhibition
+                </p>
+                <div className="mt-8 flex flex-col items-center gap-3">
+                  <div className="w-full max-w-sm">
+                    <TicketBuyButton tierName="Weekend Pass" />
+                  </div>
+                  <Link
+                    href={`/events/${featured.slug}#tiket`}
+                    className="mt-2 font-mono text-xs font-bold tracking-widest text-acid hover:text-paper uppercase underline underline-offset-4 transition-colors"
+                  >
+                    Lihat semua paket tiket festival →
+                  </Link>
+                </div>
               </div>
             </Reveal>
           </div>
