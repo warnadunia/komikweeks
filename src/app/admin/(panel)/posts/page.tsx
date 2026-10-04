@@ -60,13 +60,9 @@ export default async function AdminPostsPage() {
                 <div
                   className="flex size-16 shrink-0 items-center justify-center border-2 border-paper/30 bg-ink bg-cover bg-center font-display text-xs text-paper/40 shadow-[2px_2px_0_#000]"
                   style={{
-                    backgroundImage: p.coverImage ? `url(${p.coverImage})` : undefined,
+                    backgroundImage: `url(${p.coverImage || "/covers/default-cover.jpg"})`,
                   }}
-                >
-                  {!p.coverImage && (
-                    <span className="font-mono text-[9px] uppercase">No Img</span>
-                  )}
-                </div>
+                />
 
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">

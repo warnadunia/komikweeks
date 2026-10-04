@@ -2,8 +2,11 @@ import { BookLock, Lock, Star } from "lucide-react";
 import Link from "next/link";
 import type { SeriesCardData } from "@/lib/queries";
 import { formatCompact } from "@/lib/utils";
+import { getSeriesCover } from "@/lib/dummy-images";
 
 export function SeriesCard({ s, rank }: { s: SeriesCardData; rank?: number }) {
+  const coverUrl = getSeriesCover(s.coverImage, s.slug);
+
   return (
     <Link
       href={`/comics/${s.slug}`}
@@ -12,7 +15,7 @@ export function SeriesCard({ s, rank }: { s: SeriesCardData; rank?: number }) {
       <div className="relative overflow-hidden border-3 border-paper shadow-[6px_6px_0_rgba(245,241,232,0.9)] transition-shadow duration-300 group-hover:shadow-[10px_10px_0_var(--color-acid)]">
         <div
           className="aspect-[768/1376] w-full bg-cover bg-center transition-transform duration-500 group-hover:scale-[1.05]"
-          style={{ backgroundImage: `url(${s.coverImage})` }}
+          style={{ backgroundImage: `url(${coverUrl})` }}
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/85 via-transparent to-ink/20" />
         {rank !== undefined && (

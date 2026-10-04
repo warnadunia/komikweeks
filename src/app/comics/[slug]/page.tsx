@@ -9,6 +9,7 @@ import { SiteNav } from "@/components/site-nav";
 import { getChaptersForSeries, getOwnedChapterIds, getSeriesBySlug } from "@/lib/queries";
 import { getVisitorKey } from "@/lib/visitor";
 import { formatCompact, formatDate } from "@/lib/utils";
+import { getSeriesCover } from "@/lib/dummy-images";
 
 export const dynamic = "force-dynamic";
 
@@ -44,6 +45,8 @@ export default async function SeriesPage({
 
   const firstChapter = chapterRows.find((c) => c.isPublished);
 
+  const coverUrl = getSeriesCover(s.coverImage, s.slug);
+
   return (
     <div>
       <SiteNav />
@@ -52,7 +55,7 @@ export default async function SeriesPage({
       <header className="relative overflow-hidden border-b-3 border-paper">
         <div
           className="absolute inset-0 scale-125 bg-cover bg-center opacity-25 blur-2xl saturate-75"
-          style={{ backgroundImage: `url(${s.coverImage})` }}
+          style={{ backgroundImage: `url(${coverUrl})` }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-ink/60 via-ink/80 to-ink" />
         <div className="halftone-dark absolute inset-0" />
@@ -70,7 +73,7 @@ export default async function SeriesPage({
               <div className="relative mx-auto w-64 rotate-[-2deg] sm:w-72 lg:w-full">
                 <div
                   className="aspect-[768/1376] w-full border-3 border-paper bg-cover bg-center shadow-[10px_10px_0_#c9f73a]"
-                  style={{ backgroundImage: `url(${s.coverImage})` }}
+                  style={{ backgroundImage: `url(${coverUrl})` }}
                 />
                 {s.status === "upcoming" && (
                   <span className="absolute -right-3 top-6 rotate-6 border-3 border-ink bg-brand px-3 py-1.5 font-mono text-[10px] font-bold tracking-widest text-paper uppercase shadow-[3px_3px_0_#000]">

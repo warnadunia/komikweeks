@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 768 1376" width="768" height="1376">
+  <defs>
+    <linearGradient id="bgGrad_langit-kertas" x1="0" y1="0" x2="0.8" y2="1">
+      <stop offset="0%" stop-color="#0D1117" />
+      <stop offset="50%" stop-color="#050508" />
+      <stop offset="100%" stop-color="#000000" />
+    </linearGradient>
+
+    <pattern id="halftone_langit-kertas" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="12" cy="12" r="3" fill="#38BDF8" opacity="0.12" />
+    </pattern>
+
+    <pattern id="grid_langit-kertas" x="0" y="0" width="48" height="48" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="48" y2="0" stroke="#F472B6" stroke-width="1" opacity="0.08" />
+      <line x1="0" y1="0" x2="0" y2="48" stroke="#F472B6" stroke-width="1" opacity="0.08" />
+    </pattern>
+
+    <filter id="shadow_langit-kertas">
+      <feDropShadow dx="8" dy="8" stdDeviation="0" flood-color="#38BDF8" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="768" height="1376" fill="url(#bgGrad_langit-kertas)" />
+  <rect width="768" height="1376" fill="url(#halftone_langit-kertas)" />
+  <rect width="768" height="1376" fill="url(#grid_langit-kertas)" />
+
+  <!-- Outer Comic Borders -->
+  <rect x="24" y="24" width="720" height="1328" fill="none" stroke="#F5F1E8" stroke-width="6" />
+  <rect x="36" y="36" width="696" height="1304" fill="none" stroke="#38BDF8" stroke-width="2" stroke-dasharray="12 6" opacity="0.5" />
+
+  <!-- Action Dynamic Speedlines -->
+  <g stroke="#38BDF8" stroke-width="2" opacity="0.25">
+    <line x1="36" y1="36" x2="384" y2="600" />
+    <line x1="732" y1="36" x2="384" y2="600" />
+    <line x1="36" y1="1340" x2="384" y2="600" />
+    <line x1="732" y1="1340" x2="384" y2="600" />
+  </g>
+
+  <!-- Top Header Banner -->
+  <g transform="translate(60, 60)">
+    <rect width="180" height="40" fill="#38BDF8" />
+    <text x="90" y="26" fill="#0A0A0C" font-family="monospace" font-size="14" font-weight="900" letter-spacing="3" text-anchor="middle">
+      COMIC WEEK
+    </text>
+  </g>
+
+  <g transform="translate(528, 60)">
+    <rect width="180" height="40" fill="#0E0E12" stroke="#F5F1E8" stroke-width="3" />
+    <text x="90" y="25" fill="#F5F1E8" font-family="monospace" font-size="12" font-weight="bold" letter-spacing="2" text-anchor="middle">
+      OFFICIAL ART
+    </text>
+  </g>
+
+  <!-- Center Art Panel Box -->
+  <g transform="translate(60, 140)">
+    <rect width="648" height="820" fill="#0A0B10" stroke="#F5F1E8" stroke-width="4" filter="url(#shadow_langit-kertas)" />
+    
+    <!-- Manga Stylized Character Silhouette -->
+    <path d="M 324 240 Q 324 160 380 160 Q 436 160 436 240 Q 450 300 460 380 Q 560 460 580 620 L 520 810 L 240 810 L 180 620 Q 200 460 300 380 Z" 
+          fill="#F472B6" opacity="0.3" />
+    
+    <!-- Glowing Center Monolith / Katana Line -->
+    <line x1="324" y1="180" x2="324" y2="800" stroke="#38BDF8" stroke-width="8" opacity="0.8" />
+    <circle cx="324" cy="300" r="48" fill="none" stroke="#38BDF8" stroke-width="6" />
+    <circle cx="324" cy="300" r="16" fill="#38BDF8" />
+
+    <!-- Japanese Sound Effect Kanji Accent -->
+    <text x="560" y="320" fill="#38BDF8" font-family="sans-serif" font-size="72" font-weight="900" opacity="0.7">
+      ドド
+    </text>
+    <text x="120" y="680" fill="#F472B6" font-family="sans-serif" font-size="72" font-weight="900" opacity="0.7">
+      ズズ
+    </text>
+
+    <!-- Genre Pill inside Art -->
+    <g transform="translate(36, 750)">
+      <rect width="260" height="34" fill="#000000" stroke="#38BDF8" stroke-width="2" />
+      <text x="130" y="22" fill="#38BDF8" font-family="monospace" font-size="11" font-weight="bold" letter-spacing="2" text-anchor="middle">
+        ROMANSA · SEKOLAH
+      </text>
+    </g>
+  </g>
+
+  <!-- Title & Info Section -->
+  <g transform="translate(60, 1020)">
+    <!-- Title Background Plate -->
+    <rect width="648" height="170" fill="#0A0A0E" stroke="#F5F1E8" stroke-width="4" />
+    
+    <!-- Decorative Corner Tape -->
+    <polygon points="0,0 40,0 0,40" fill="#38BDF8" />
+    <polygon points="648,170 608,170 648,130" fill="#F472B6" />
+
+    <!-- Comic Title -->
+    <text x="324" y="80" fill="#F5F1E8" font-family="sans-serif" font-size="44" font-weight="900" letter-spacing="2" text-anchor="middle">
+      LANGIT KERTAS
+    </text>
+    
+    <text x="324" y="125" fill="#38BDF8" font-family="monospace" font-size="14" font-weight="bold" letter-spacing="4" text-anchor="middle">
+      EDISI RESMI · JAKARTA FESTIVAL
+    </text>
+  </g>
+
+  <!-- Bottom Barcode & Meta -->
+  <g transform="translate(60, 1220)">
+    <rect width="648" height="70" fill="#0E0E14" stroke="#F5F1E8" stroke-width="2" />
+    
+    <!-- Stylized Fake Barcode -->
+    <g transform="translate(24, 15)" fill="#F5F1E8">
+      <rect x="0" width="3" height="40" />
+      <rect x="6" width="6" height="40" />
+      <rect x="16" width="2" height="40" />
+      <rect x="22" width="5" height="40" />
+      <rect x="30" width="3" height="40" />
+      <rect x="36" width="8" height="40" />
+      <rect x="48" width="4" height="40" />
+      <rect x="56" width="2" height="40" />
+      <rect x="62" width="6" height="40" />
+      <rect x="72" width="3" height="40" />
+      <rect x="80" width="7" height="40" />
+      <rect x="92" width="2" height="40" />
+      <rect x="98" width="5" height="40" />
+    </g>
+
+    <text x="140" y="42" fill="#F5F1E8" font-family="monospace" font-size="11" opacity="0.6">
+      CW-ARCHIVE // DRAFT PREVIEW
+    </text>
+
+    <text x="620" y="42" fill="#38BDF8" font-family="monospace" font-size="13" font-weight="bold" text-anchor="end">
+      ★ 9.8 / 10
+    </text>
+  </g>
+</svg>

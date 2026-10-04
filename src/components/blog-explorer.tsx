@@ -159,14 +159,13 @@ export function BlogExplorer({
               >
                 {/* Cover Image */}
                 <Link href={`/blog/${post.slug}`} className="relative aspect-[16/10] overflow-hidden border-b-3 border-paper/30 bg-ink">
-                  {post.coverImage ? (
-                    <div
-                      className="size-full bg-cover bg-center transition-transform duration-300 group-hover:scale-105"
-                      style={{ backgroundImage: `url(${post.coverImage})` }}
-                    />
-                  ) : (
-                    <div className="halftone-dark flex size-full items-center justify-center p-4 text-center font-display text-2xl text-paper/20 uppercase">
-                      COMIC WEEK
+                  <div
+                    className="size-full bg-cover bg-center transition-transform duration-300 group-hover:scale-105"
+                    style={{ backgroundImage: `url(${post.coverImage || "/covers/default-cover.jpg"})` }}
+                  />
+                  {!post.coverImage && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-ink/50 font-mono text-[10px] tracking-widest text-acid uppercase">
+                      Draft Preview Cover
                     </div>
                   )}
 

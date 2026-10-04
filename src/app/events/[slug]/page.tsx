@@ -21,6 +21,7 @@ import { ScheduleTabs } from "@/components/schedule-tabs";
 import { TicketBuyButton } from "@/components/ticket-buy";
 import { getEventBundle, getPostsForEvent, getPublishedEvents } from "@/lib/queries";
 import { dateRange, formatCompact, formatIDR } from "@/lib/utils";
+import { getSeriesCover } from "@/lib/dummy-images";
 
 export const dynamic = "force-dynamic";
 
@@ -401,7 +402,7 @@ export default async function EventMicrosite({
                 <Reveal key={s.id} delay={i * 0.08} className="w-56 shrink-0 lg:w-auto">
                   <Link href={`/comics/${s.slug}`} className="group block">
                     <div className="relative overflow-hidden border-3 border-paper transition-all group-hover:-translate-y-1.5" style={{ boxShadow: `6px 6px 0 ${event.accent}` }}>
-                      <div className="aspect-[768/1376] w-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105" style={{ backgroundImage: `url(${s.coverImage})` }} />
+                      <div className="aspect-[768/1376] w-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105" style={{ backgroundImage: `url(${getSeriesCover(s.coverImage, s.slug)})` }} />
                       <div className="absolute right-2 bottom-2 left-2 flex items-end justify-between">
                         <span className="border-2 border-ink bg-paper px-2 py-0.5 font-mono text-[9px] font-bold tracking-widest text-ink uppercase shadow-[2px_2px_0_#000]">
                           {s.genres[0]}

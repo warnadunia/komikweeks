@@ -7,6 +7,7 @@ import { UnlockGate } from "@/components/unlock-gate";
 import { WalletBadge } from "@/components/wallet-client";
 import { getChapter, getWallet, hasPurchased } from "@/lib/queries";
 import { getVisitorKey } from "@/lib/visitor";
+import { getChapterSlices } from "@/lib/dummy-images";
 
 export const dynamic = "force-dynamic";
 
@@ -87,19 +88,34 @@ export default async function ReaderPage({
             </div>
 
             {/* vertical slices */}
-            <div className="flex flex-col">
-              {chapter.pages.map((p, i) => (
-                <div
-                  key={i}
-                  className="slice w-full"
-                  style={{
-                    aspectRatio: p.ar,
-                    backgroundImage: `url(${p.src})`,
-                    backgroundPosition: `50% ${p.pos}%`,
-                  }}
-                />
-              ))}
-            </div>
+            {(() => {
+              const pages = getChapterSlices(chapter.pages, series.slug);
+              const isDummy = !chapter.pages || chapter.pages.length === 0;
+
+              return (
+                <>
+                  {isDummy && (
+                    <div className="mx-4 mb-4 flex items-center justify-between border-2 border-dashed border-acid/60 bg-acid/10 px-4 py-2 font-mono text-xs text-acid sm:mx-0">
+                      <span>// DRAFT PREVIEW — Panel Visual Dummy Comic Week</span>
+                      <span className="text-[10px] tracking-widest uppercase">Showcase</span>
+                    </div>
+                  )}
+                  <div className="flex flex-col">
+                    {pages.map((p, i) => (
+                      <div
+                        key={i}
+                        className="slice w-full"
+                        style={{
+                          aspectRatio: p.ar,
+                          backgroundImage: `url(${p.src})`,
+                          backgroundPosition: `50% ${p.pos}%`,
+                        }}
+                      />
+                    ))}
+                  </div>
+                </>
+              );
+            })()}
 
             {/* end panel */}
             <div className="border-t-3 border-dashed border-paper/20 px-4 py-12 text-center sm:px-0">

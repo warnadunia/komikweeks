@@ -182,16 +182,14 @@ export default async function BlogPostPage({
         </header>
 
         {/* Foto Sampul Utama */}
-        {post.coverImage && (
-          <div className="my-8 overflow-hidden border-3 border-paper shadow-[8px_8px_0_#c9f73a]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={post.coverImage}
-              alt={post.title}
-              className="max-h-[500px] w-full object-cover"
-            />
-          </div>
-        )}
+        <div className="my-8 overflow-hidden border-3 border-paper shadow-[8px_8px_0_#c9f73a]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={post.coverImage || "/covers/default-cover.jpg"}
+            alt={post.title}
+            className="max-h-[500px] w-full object-cover"
+          />
+        </div>
 
         {/* Konten Utama Artikel */}
         <article className="prose prose-invert mt-8 max-w-none">

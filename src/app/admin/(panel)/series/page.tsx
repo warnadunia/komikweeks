@@ -5,6 +5,7 @@ import Link from "next/link";
 import { StatusBadge } from "@/components/admin/fields";
 import { db } from "@/db";
 import { events, series } from "@/db/schema";
+import { getSeriesCover } from "@/lib/dummy-images";
 
 export const dynamic = "force-dynamic";
 
@@ -59,7 +60,7 @@ export default async function SeriesAdminPage() {
           >
             <div
               className="aspect-[768/1376] w-16 shrink-0 border-2 border-paper bg-cover bg-center"
-              style={{ backgroundImage: `url(${s.coverImage})` }}
+              style={{ backgroundImage: `url(${getSeriesCover(s.coverImage, s.slug)})` }}
             />
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
