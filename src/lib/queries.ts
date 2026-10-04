@@ -1,6 +1,6 @@
 import { and, asc, desc, eq, inArray, ne, or, sql } from "drizzle-orm";
 import { db } from "@/db";
-import { chapters, events, guests, purchases, schedules, series, wallets, posts } from "@/db/schema";
+import { chapters, events, guests, purchases, schedules, series, wallets, posts, products } from "@/db/schema";
 
 /* ---------------------------------- events --------------------------------- */
 
@@ -65,6 +65,8 @@ export type SeriesCardData = {
   chapterCount: number;
   debutName: string | null;
   debutSlug: string | null;
+  debutEdition: string | null;
+  eventId: number | null;
 };
 
 export async function getSeriesCards(): Promise<SeriesCardData[]> {
@@ -84,6 +86,8 @@ export async function getSeriesCards(): Promise<SeriesCardData[]> {
       releaseDay: series.releaseDay,
       debutName: events.name,
       debutSlug: events.slug,
+      debutEdition: events.edition,
+      eventId: series.eventId,
       chapterCount: sql<number>`(
         select count(*)::int from ${chapters}
         where ${chapters.seriesId} = ${series.id} and ${chapters.isPublished} = true
@@ -298,6 +302,130 @@ export async function getAllPostsAdmin() {
 
 export async function getPostByIdAdmin(id: number) {
   const [row] = await db.select().from(posts).where(eq(posts.id, id)).limit(1);
+  return row ?? null;
+}
+
+/* -------------------------------- products -------------------------------- */
+
+export type ProductCardData = {
+  id: number;
+  slug: string;
+  name: string;
+  description: string | null;
+  price: number;
+  originalPrice: number | null;
+  category: string;
+  badge: string | null;
+  image: string;
+  buyUrl: string;
+  buyLabel: string;
+  secondaryBuyUrl: string | null;
+  secondaryBuyLabel: string | null;
+  stockStatus: string;
+  eventId: number | null;
+  eventName: string | null;
+  eventSlug: string | null;
+  eventEdition: string | null;
+  featured: boolean;
+  isPublished: boolean;
+  createdAt: Date;
+};
+
+export async function getPublishedProducts(opts?: {
+  category?: string;
+  eventId?: number;
+  featured?: boolean;
+}): Promise<ProductCardData[]> {
+  const conditions = [eq(products.isPublished, true)];
+  if (opts?.category && opts.category !== "Semua") {
+    conditions.push(eq(products.category, opts.category));
+  }
+  if (opts?.eventId) {
+    conditions.push(eq(products.eventId, opts.eventId));
+  }
+  if (opts?.featured) {
+    conditions.push(eq(products.featured, true));
+  }
+
+  const rows = await db
+    .select({
+      id: products.id,
+      slug: products.slug,
+      name: products.name,
+      description: products.description,
+      price: products.price,
+      originalPrice: products.originalPrice,
+      category: products.category,
+      badge: products.badge,
+      image: products.image,
+      buyUrl: products.buyUrl,
+      buyLabel: products.buyLabel,
+      secondaryBuyUrl: products.secondaryBuyUrl,
+      secondaryBuyLabel: products.secondaryBuyLabel,
+      stockStatus: products.stockStatus,
+      eventId: products.eventId,
+      eventName: events.name,
+      eventSlug: events.slug,
+      eventEdition: events.edition,
+      featured: products.featured,
+      isPublished: products.isPublished,
+      createdAt: products.createdAt,
+    })
+    .from(products)
+    .leftJoin(events, eq(products.eventId, events.id))
+    .where(and(...conditions))
+    .orderBy(desc(products.featured), desc(products.createdAt));
+
+  return rows;
+}
+
+export async function getProductBySlug(slug: string): Promise<ProductCardData | null> {
+  const rows = await db
+    .select({
+      id: products.id,
+      slug: products.slug,
+      name: products.name,
+      description: products.description,
+      price: products.price,
+      originalPrice: products.originalPrice,
+      category: products.category,
+      badge: products.badge,
+      image: products.image,
+      buyUrl: products.buyUrl,
+      buyLabel: products.buyLabel,
+      secondaryBuyUrl: products.secondaryBuyUrl,
+      secondaryBuyLabel: products.secondaryBuyLabel,
+      stockStatus: products.stockStatus,
+      eventId: products.eventId,
+      eventName: events.name,
+      eventSlug: events.slug,
+      eventEdition: events.edition,
+      featured: products.featured,
+      isPublished: products.isPublished,
+      createdAt: products.createdAt,
+    })
+    .from(products)
+    .leftJoin(events, eq(products.eventId, events.id))
+    .where(and(eq(products.slug, slug), eq(products.isPublished, true)))
+    .limit(1);
+
+  return rows[0] ?? null;
+}
+
+export async function getAllProductsAdmin() {
+  return db
+    .select({
+      product: products,
+      eventName: events.name,
+      eventEdition: events.edition,
+    })
+    .from(products)
+    .leftJoin(events, eq(products.eventId, events.id))
+    .orderBy(desc(products.createdAt));
+}
+
+export async function getProductByIdAdmin(id: number) {
+  const [row] = await db.select().from(products).where(eq(products.id, id)).limit(1);
   return row ?? null;
 }
 

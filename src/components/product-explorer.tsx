@@ -1,29 +1,29 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { CalendarRange, Layers, Search, Sparkles } from "lucide-react";
+import { CalendarRange, Filter, Layers, Search, ShoppingBag, Sparkles } from "lucide-react";
 import { useMemo, useState } from "react";
-import type { SeriesCardData } from "@/lib/queries";
+import type { ProductCardData } from "@/lib/queries";
 import { cn } from "@/lib/utils";
-import { SeriesCard } from "@/components/series-card";
+import { ProductCard } from "@/components/product-card";
 
-type SortKey = "rating" | "views" | "az";
+type SortKey = "featured" | "price_asc" | "price_desc" | "newest";
 
-export function ComicExplorer({ series }: { series: SeriesCardData[] }) {
+export function ProductExplorer({ products }: { products: ProductCardData[] }) {
   const [selectedEvent, setSelectedEvent] = useState<string>("all");
-  const [genre, setGenre] = useState<string>("Semua");
+  const [category, setCategory] = useState<string>("Semua");
   const [query, setQuery] = useState("");
-  const [sort, setSort] = useState<SortKey>("rating");
+  const [sort, setSort] = useState<SortKey>("featured");
 
-  // Ekstraksi opsi Event Volume / Tahun dari data series
+  // Ekstraksi opsi Event dari data produk
   const eventOptions = useMemo(() => {
-    const map = new Map<string, { label: string; name: string; count: number }>();
-    series.forEach((s) => {
-      if (s.debutName) {
-        const key = s.debutName;
+    const map = new Map<string, { label: string; count: number }>();
+    products.forEach((p) => {
+      if (p.eventName) {
+        const key = p.eventName;
         const count = (map.get(key)?.count ?? 0) + 1;
-        const label = s.debutEdition ? `${s.debutName} (${s.debutEdition})` : s.debutName;
-        map.set(key, { label, name: s.debutName, count });
+        const label = p.eventEdition ? `${p.eventName} (${p.eventEdition})` : p.eventName;
+        map.set(key, { label, count });
       }
     });
 
@@ -33,38 +33,60 @@ export function ComicExplorer({ series }: { series: SeriesCardData[] }) {
       count: v.count,
     }));
 
-    return [{ key: "all", label: "Semua Edisi & Tahun", count: series.length }, ...list];
-  }, [series]);
+    return [{ key: "all", label: "Semua Edisi Festival", count: products.length }, ...list];
+  }, [products]);
 
-  const genres = useMemo(() => {
-    const all = new Set<string>();
-    series.forEach((s) => s.genres.forEach((g) => all.add(g)));
-    return ["Semua", ...Array.from(all).sort()];
-  }, [series]);
+  // Ekstraksi kategori dari data produk
+  const categories = useMemo(() => {
+    const set = new Set<string>();
+    products.forEach((p) => set.add(p.category));
+    return ["Semua", ...Array.from(set).sort()];
+  }, [products]);
 
   const filtered = useMemo(() => {
-    let list = series;
+    let list = products;
+
+    // Filter event
     if (selectedEvent !== "all") {
-      list = list.filter((s) => s.debutName === selectedEvent);
+      list = list.filter((p) => p.eventName === selectedEvent);
     }
-    if (genre !== "Semua") {
-      list = list.filter((s) => s.genres.includes(genre));
+
+    // Filter kategori
+    if (category !== "Semua") {
+      list = list.filter((p) => p.category === category);
     }
+
+    // Filter search text
     if (query.trim()) {
       const q = query.toLowerCase();
       list = list.filter(
-        (s) => s.title.toLowerCase().includes(q) || s.author.toLowerCase().includes(q),
+        (p) =>
+          p.name.toLowerCase().includes(q) ||
+          p.category.toLowerCase().includes(q) ||
+          (p.description && p.description.toLowerCase().includes(q)) ||
+          (p.badge && p.badge.toLowerCase().includes(q)) ||
+          (p.eventName && p.eventName.toLowerCase().includes(q)),
       );
     }
+
+    // Sorting
     const sorted = [...list];
-    if (sort === "rating") sorted.sort((a, b) => b.rating - a.rating);
-    if (sort === "views") sorted.sort((a, b) => b.views - a.views);
-    if (sort === "az") sorted.sort((a, b) => a.title.localeCompare(b.title));
+    if (sort === "featured") {
+      sorted.sort((a, b) => Number(b.featured) - Number(a.featured));
+    } else if (sort === "price_asc") {
+      sorted.sort((a, b) => a.price - b.price);
+    } else if (sort === "price_desc") {
+      sorted.sort((a, b) => b.price - a.price);
+    } else if (sort === "newest") {
+      sorted.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    }
+
     return sorted;
-  }, [series, selectedEvent, genre, query, sort]);
+  }, [products, selectedEvent, category, query, sort]);
 
   return (
     <div>
+      {/* Control Panel Filter & Pencarian */}
       <div className="flex flex-col gap-4 border-3 border-paper bg-ink-soft p-4 shadow-[6px_6px_0_#c9f73a] sm:p-5">
         {/* Row 1: Search & Sort */}
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -73,17 +95,19 @@ export function ComicExplorer({ series }: { series: SeriesCardData[] }) {
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Cari judul, kreator, atau event..."
+              placeholder="Cari artbook, apparel, kaos, print, stiker..."
               className="w-full bg-transparent font-mono text-sm text-paper outline-none placeholder:text-paper/35"
             />
           </div>
+
           <div className="flex items-center gap-2">
             <span className="font-mono text-[10px] tracking-[0.2em] text-paper/40 uppercase">Urutkan</span>
             {(
               [
-                ["rating", "Rating"],
-                ["views", "Populer"],
-                ["az", "A–Z"],
+                ["featured", "Unggulan"],
+                ["price_asc", "Harga: Rendah"],
+                ["price_desc", "Harga: Tinggi"],
+                ["newest", "Terbaru"],
               ] as [SortKey, string][]
             ).map(([k, label]) => (
               <button
@@ -102,12 +126,12 @@ export function ComicExplorer({ series }: { series: SeriesCardData[] }) {
           </div>
         </div>
 
-        {/* Row 2: Filter Event Volume / Tahun */}
+        {/* Row 2: Filter Event Volume / Edisi */}
         <div className="flex flex-col gap-2 border-t-2 border-paper/15 pt-3">
           <div className="flex items-center gap-2">
             <CalendarRange className="size-3.5 text-acid" />
             <span className="font-mono text-[10px] font-bold tracking-[0.2em] text-paper/70 uppercase">
-              Filter Edisi / Tahun Penyelenggaraan:
+              Merchandise Edisi Event / Tahun:
             </span>
           </div>
           <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1">
@@ -139,56 +163,69 @@ export function ComicExplorer({ series }: { series: SeriesCardData[] }) {
           </div>
         </div>
 
-        {/* Row 3: Filter Genre */}
+        {/* Row 3: Filter Kategori */}
         <div className="flex flex-col gap-2 border-t-2 border-dashed border-paper/15 pt-3">
           <div className="flex items-center gap-2">
             <Layers className="size-3.5 text-brand" />
             <span className="font-mono text-[10px] font-bold tracking-[0.2em] text-paper/70 uppercase">
-              Kategori Genre:
+              Kategori Produk:
             </span>
           </div>
           <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1">
-            {genres.map((g) => (
+            {categories.map((c) => (
               <button
-                key={g}
-                onClick={() => setGenre(g)}
+                key={c}
+                onClick={() => setCategory(c)}
                 className={cn(
                   "shrink-0 cursor-pointer border-2 px-3 py-1.5 font-mono text-[11px] font-bold tracking-widest uppercase transition-all",
-                  genre === g
+                  category === c
                     ? "-rotate-1 border-ink bg-brand text-paper shadow-[3px_3px_0_#f5f1e8]"
                     : "border-paper/25 bg-ink text-paper/55 hover:border-paper/70 hover:text-paper",
                 )}
               >
-                {g}
+                {c}
               </button>
             ))}
           </div>
         </div>
       </div>
 
-
-      <motion.div layout className="mt-10 grid grid-cols-2 gap-x-5 gap-y-10 sm:grid-cols-3 lg:grid-cols-4">
+      {/* Grid Katalog Produk */}
+      <motion.div layout className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
         <AnimatePresence mode="popLayout">
-          {filtered.map((s, i) => (
+          {filtered.map((p, i) => (
             <motion.div
               layout
-              key={s.id}
+              key={p.id}
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.94 }}
-              transition={{ duration: 0.4, delay: i * 0.04, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.35, delay: i * 0.04, ease: [0.22, 1, 0.36, 1] }}
             >
-              <SeriesCard s={s} rank={sort === "rating" && genre === "Semua" && !query ? i + 1 : undefined} />
+              <ProductCard p={p} />
             </motion.div>
           ))}
         </AnimatePresence>
       </motion.div>
+
+      {/* Empty State */}
       {filtered.length === 0 && (
         <div className="mt-10 border-3 border-dashed border-paper/30 p-14 text-center">
-          <p className="font-display text-2xl text-paper/60">TIDAK DITEMUKAN</p>
+          <ShoppingBag className="mx-auto size-10 text-paper/30" />
+          <p className="mt-3 font-display text-2xl text-paper/60 uppercase">Produk Tidak Ditemukan</p>
           <p className="mt-2 font-mono text-xs tracking-widest text-paper/40 uppercase">
-            Panel ini masih kosong — coba kata kunci lain
+            Belum ada katalog untuk kombinasi filter ini — coba reset kata kunci atau kategori.
           </p>
+          <button
+            onClick={() => {
+              setQuery("");
+              setCategory("Semua");
+              setSelectedEvent("all");
+            }}
+            className="mt-5 inline-flex cursor-pointer items-center gap-2 border-2 border-acid bg-ink px-4 py-2 font-mono text-xs font-bold tracking-widest text-acid uppercase hover:bg-acid hover:text-ink transition-colors"
+          >
+            Reset Semua Filter
+          </button>
         </div>
       )}
     </div>

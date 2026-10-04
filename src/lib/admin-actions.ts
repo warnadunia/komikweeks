@@ -12,6 +12,7 @@ import {
   schedules,
   series,
   posts,
+  products,
   type PageSlice,
   type TicketTier,
 } from "@/db/schema";
@@ -418,4 +419,111 @@ export async function deletePost(id: number): Promise<FormState> {
   revalidatePath("/admin/posts");
   return ok("Artikel berhasil dihapus.");
 }
+
+/* -------------------------------- products -------------------------------- */
+
+export async function upsertProduct(_prev: FormState, fd: FormData): Promise<FormState> {
+  const denied = await guard();
+  if (denied) return denied;
+
+  const id = num(fd, "id", 0);
+  const name = str(fd, "name");
+  const slug = str(fd, "slug");
+  const description = str(fd, "description") || null;
+  const price = num(fd, "price", 0);
+  const originalPriceRaw = str(fd, "originalPrice");
+  const originalPrice = originalPriceRaw ? num(fd, "originalPrice", 0) : null;
+  const category = str(fd, "category") || "Merchandise";
+  const badge = str(fd, "badge") || null;
+  const image = str(fd, "image");
+  const buyUrl = str(fd, "buyUrl");
+  const buyLabel = str(fd, "buyLabel") || "Beli Sekarang";
+  const secondaryBuyUrl = str(fd, "secondaryBuyUrl") || null;
+  const secondaryBuyLabel = str(fd, "secondaryBuyLabel") || "Tanya via WhatsApp";
+  const stockStatus = str(fd, "stockStatus") || "in_stock";
+  const eventIdRaw = str(fd, "eventId");
+  const eventId = eventIdRaw && eventIdRaw !== "none" ? Number(eventIdRaw) : null;
+  const featured = checked(fd, "featured");
+  const isPublished = checked(fd, "isPublished");
+
+  if (!name) return fail("Nama produk wajib diisi.");
+  if (!slug) return fail("Slug URL produk wajib diisi.");
+  if (!price || price <= 0) return fail("Harga produk harus lebih dari 0.");
+  if (!image) return fail("Foto produk wajib diisi/diunggah.");
+  if (!buyUrl) return fail("Link checkout / pembelian (e-commerce atau WA) wajib diisi.");
+
+  let redirectTarget: string | null = null;
+  try {
+    if (id > 0) {
+      await db
+        .update(products)
+        .set({
+          name,
+          slug,
+          description,
+          price,
+          originalPrice,
+          category,
+          badge,
+          image,
+          buyUrl,
+          buyLabel,
+          secondaryBuyUrl,
+          secondaryBuyLabel,
+          stockStatus,
+          eventId,
+          featured,
+          isPublished,
+          updatedAt: new Date(),
+        })
+        .where(eq(products.id, id));
+    } else {
+      const [created] = await db
+        .insert(products)
+        .values({
+          name,
+          slug,
+          description,
+          price,
+          originalPrice,
+          category,
+          badge,
+          image,
+          buyUrl,
+          buyLabel,
+          secondaryBuyUrl,
+          secondaryBuyLabel,
+          stockStatus,
+          eventId,
+          featured,
+          isPublished,
+        })
+        .returning({ id: products.id });
+      redirectTarget = `/admin/products/${created.id}`;
+    }
+  } catch (e) {
+    if (isUniqueViolation(e)) return fail(`Slug "${slug}" sudah dipakai oleh produk lain.`);
+    return fail(`Gagal menyimpan produk: ${(e as Error).message}`);
+  }
+
+  revalidatePath("/shop");
+  revalidatePath(`/shop/${slug}`);
+  revalidatePath("/admin/products");
+  revalidatePath("/events");
+
+  if (redirectTarget) redirect(redirectTarget);
+  return ok("Produk berhasil disimpan.");
+}
+
+export async function deleteProduct(id: number): Promise<FormState> {
+  const denied = await guard();
+  if (denied) return denied;
+  if (!id) return fail("ID produk tidak valid.");
+
+  await db.delete(products).where(eq(products.id, id));
+  revalidatePath("/shop");
+  revalidatePath("/admin/products");
+  return ok("Produk berhasil dihapus dari artshop.");
+}
+
 

@@ -203,3 +203,39 @@ export const posts = pgTable(
 export type Post = typeof posts.$inferSelect;
 export type NewPost = typeof posts.$inferInsert;
 
+export const products = pgTable(
+  "products",
+  {
+    id: serial("id").primaryKey(),
+    slug: varchar("slug", { length: 140 }).notNull().unique(),
+    name: varchar("name", { length: 220 }).notNull(),
+    description: text("description"),
+    price: integer("price").notNull(),
+    originalPrice: integer("original_price"),
+    category: varchar("category", { length: 80 }).notNull().default("Merchandise"),
+    badge: varchar("badge", { length: 80 }),
+    image: varchar("image", { length: 500 }).notNull(),
+    buyUrl: varchar("buy_url", { length: 500 }).notNull(),
+    buyLabel: varchar("buy_label", { length: 80 }).notNull().default("Beli Sekarang"),
+    secondaryBuyUrl: varchar("secondary_buy_url", { length: 500 }),
+    secondaryBuyLabel: varchar("secondary_buy_label", { length: 80 }).default("Tanya via WhatsApp"),
+    stockStatus: varchar("stock_status", { length: 30 }).notNull().default("in_stock"),
+    eventId: integer("event_id").references(() => events.id, {
+      onDelete: "set null",
+    }),
+    featured: boolean("featured").notNull().default(false),
+    isPublished: boolean("is_published").notNull().default(true),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (t) => [
+    index("products_category_idx").on(t.category),
+    index("products_event_idx").on(t.eventId),
+    index("products_published_idx").on(t.isPublished),
+  ],
+);
+
+export type Product = typeof products.$inferSelect;
+export type NewProduct = typeof products.$inferInsert;
+
+

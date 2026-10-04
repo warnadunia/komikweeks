@@ -28,7 +28,7 @@ export function SiteFooter() {
               panggung Comic Week.
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 sm:gap-12">
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-4 sm:gap-8">
             <div>
               <p className="font-mono text-[10px] tracking-[0.3em] text-paper/40 uppercase">Baca</p>
               <ul className="mt-3 space-y-2 text-sm font-semibold">
@@ -36,6 +36,15 @@ export function SiteFooter() {
                 <li><Link className="hover:text-acid" href="/comics/neon-ronin">Neon Ronin</Link></li>
                 <li><Link className="hover:text-acid" href="/comics/rasa-nusantara">Rasa Nusantara</Link></li>
                 <li><Link className="hover:text-acid" href="/comics/garuda-archive">Garuda Archive</Link></li>
+              </ul>
+            </div>
+            <div>
+              <p className="font-mono text-[10px] tracking-[0.3em] text-paper/40 uppercase">Artshop</p>
+              <ul className="mt-3 space-y-2 text-sm font-semibold">
+                <li><Link className="hover:text-acid font-bold text-acid" href="/shop">Katalog Merch</Link></li>
+                <li><Link className="hover:text-acid" href="/shop?category=Apparel">Kaos & Apparel</Link></li>
+                <li><Link className="hover:text-acid" href="/shop?category=Artbook">Artbook Resmi</Link></li>
+                <li><Link className="hover:text-acid" href="/shop?category=Aksesoris">Keychain & Stiker</Link></li>
               </ul>
             </div>
             <div>
@@ -50,7 +59,7 @@ export function SiteFooter() {
                 <li><Link className="hover:text-acid" href="/events/comic-week-2024">Arsip 2024</Link></li>
               </ul>
             </div>
-            <div className="col-span-2 sm:col-span-1">
+            <div>
               <p className="font-mono text-[10px] tracking-[0.3em] text-paper/40 uppercase">Kabar</p>
               <ul className="mt-3 space-y-2 text-sm font-semibold">
                 <li><Link className="hover:text-acid" href="/blog">Warta & Artikel</Link></li>
