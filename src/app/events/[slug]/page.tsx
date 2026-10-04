@@ -5,6 +5,7 @@ import {
   BookOpen,
   CalendarDays,
   MapPin,
+  Newspaper,
   Sparkles,
   Star,
   Ticket,
@@ -18,7 +19,7 @@ import { Marquee } from "@/components/marquee";
 import { Reveal } from "@/components/reveal";
 import { ScheduleTabs } from "@/components/schedule-tabs";
 import { TicketBuyButton } from "@/components/ticket-buy";
-import { getEventBundle, getPublishedEvents } from "@/lib/queries";
+import { getEventBundle, getPostsForEvent, getPublishedEvents } from "@/lib/queries";
 import { dateRange, formatCompact, formatIDR } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -56,7 +57,10 @@ export default async function EventMicrosite({
   if (!bundle) notFound();
 
   const { event, guests, schedules, debutSeries } = bundle;
-  const allEvents = await getPublishedEvents();
+  const [allEvents, eventPosts] = await Promise.all([
+    getPublishedEvents(),
+    getPostsForEvent(event.id),
+  ]);
   const others = allEvents.filter((e) => e.slug !== event.slug);
 
   const statusChip = {
@@ -94,6 +98,7 @@ export default async function EventMicrosite({
               ["#jadwal", "Jadwal"],
               ["#guest", "Guest Star"],
               ["#komik", "Komik"],
+              ...(eventPosts.length > 0 ? [["#kabar", "Kabar"]] : []),
               ["#tiket", "Tiket"],
             ].map(([href, label]) => (
               <a
@@ -410,6 +415,89 @@ export default async function EventMicrosite({
                       {s.title}
                     </h3>
                     <p className="font-mono text-[10px] tracking-widest text-paper/50 uppercase">{s.author}</p>
+                  </Link>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ----------------------------- kabar & kegiatan ----------------------------- */}
+      {eventPosts.length > 0 && (
+        <section id="kabar" className="scroll-mt-24 border-t-3 border-paper/15 bg-ink">
+          <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
+            <Reveal>
+              <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
+                <div>
+                  <p className="font-mono text-xs font-bold tracking-[0.3em] uppercase" style={{ color: event.accent }}>
+                    Warta & Update Resmi
+                  </p>
+                  <h2 className="font-display text-4xl text-paper uppercase sm:text-5xl">
+                    Kabar Kegiatan {event.edition}
+                  </h2>
+                </div>
+                <Link
+                  href={`/blog?edition=${encodeURIComponent(event.edition)}`}
+                  className="group inline-flex items-center gap-2 border-b-3 pb-1 font-mono text-xs font-bold tracking-[0.2em] uppercase"
+                  style={{ color: event.accent, borderColor: event.accent }}
+                >
+                  Semua Arsip Kabar {event.edition}
+                  <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                </Link>
+              </div>
+            </Reveal>
+
+            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {eventPosts.map((post, i) => (
+                <Reveal key={post.id} delay={i * 0.08} className="h-full">
+                  <Link
+                    href={`/blog/${post.slug}`}
+                    className="group flex h-full flex-col border-3 border-paper/80 bg-ink-soft transition-all hover:-translate-y-1.5 hover:border-[var(--ev-accent)]"
+                    style={{ boxShadow: `6px 6px 0 ${event.accent}` }}
+                  >
+                    {post.coverImage && (
+                      <div className="relative aspect-[16/9] w-full overflow-hidden border-b-3 border-paper/80 bg-ink">
+                        <img
+                          src={post.coverImage}
+                          alt={post.title}
+                          className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                        <span
+                          className="absolute top-3 left-3 border-2 border-ink px-2 py-0.5 font-mono text-[9px] font-bold tracking-widest text-ink uppercase shadow-[2px_2px_0_#000]"
+                          style={{ backgroundColor: event.accent }}
+                        >
+                          {post.category}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex flex-1 flex-col p-6">
+                      <div className="mb-2 flex items-center justify-between font-mono text-[10px] tracking-wider text-paper/40 uppercase">
+                        <span>
+                          {new Date(post.publishedAt).toLocaleDateString("id-ID", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          })}
+                        </span>
+                        <span>Oleh {post.author}</span>
+                      </div>
+                      <h3 className="font-display text-xl text-paper uppercase transition-colors group-hover:text-[var(--ev-accent)]">
+                        {post.title}
+                      </h3>
+                      {post.excerpt && (
+                        <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-paper/70">
+                          {post.excerpt}
+                        </p>
+                      )}
+                      <div
+                        className="mt-auto flex items-center gap-1.5 pt-6 font-mono text-[11px] font-bold uppercase"
+                        style={{ color: event.accent }}
+                      >
+                        Baca Selengkapnya
+                        <ArrowUpRight className="size-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                      </div>
+                    </div>
                   </Link>
                 </Reveal>
               ))}

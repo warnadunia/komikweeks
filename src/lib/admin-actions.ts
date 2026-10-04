@@ -11,6 +11,7 @@ import {
   guests,
   schedules,
   series,
+  posts,
   type PageSlice,
   type TicketTier,
 } from "@/db/schema";
@@ -335,3 +336,86 @@ export async function deleteChapter(id: number) {
   await db.delete(chapters).where(eq(chapters.id, id));
   return ok("Chapter dihapus (unlock terkait ikut dihapus).");
 }
+
+/* ---------------------------------- posts --------------------------------- */
+
+export async function upsertPost(_prev: FormState, fd: FormData): Promise<FormState> {
+  const denied = await guard();
+  if (denied) return denied;
+
+  const id = num(fd, "id", 0);
+  const title = str(fd, "title");
+  const slug = str(fd, "slug");
+  const excerpt = str(fd, "excerpt") || null;
+  const content = str(fd, "content");
+  const coverImage = str(fd, "coverImage") || null;
+  const category = str(fd, "category") || "general";
+  const eventIdRaw = str(fd, "eventId");
+  const eventId = eventIdRaw && eventIdRaw !== "none" ? Number(eventIdRaw) : null;
+  const author = str(fd, "author") || "Redaksi Comic Week";
+  const isPublished = checked(fd, "isPublished");
+
+  if (!title) return fail("Judul artikel/update wajib diisi.");
+  if (!slug) return fail("Slug URL wajib diisi.");
+  if (!content) return fail("Isi konten artikel wajib diisi.");
+
+  let redirectTarget: string | null = null;
+  try {
+    if (id > 0) {
+      await db
+        .update(posts)
+        .set({
+          title,
+          slug,
+          excerpt,
+          content,
+          coverImage,
+          category,
+          eventId,
+          author,
+          isPublished,
+          updatedAt: new Date(),
+        })
+        .where(eq(posts.id, id));
+    } else {
+      const [created] = await db
+        .insert(posts)
+        .values({
+          title,
+          slug,
+          excerpt,
+          content,
+          coverImage,
+          category,
+          eventId,
+          author,
+          isPublished,
+        })
+        .returning({ id: posts.id });
+      redirectTarget = `/admin/posts/${created.id}`;
+    }
+  } catch (e) {
+    if (isUniqueViolation(e)) return fail(`Slug "${slug}" sudah dipakai oleh artikel lain.`);
+    return fail(`Gagal menyimpan artikel: ${(e as Error).message}`);
+  }
+
+  revalidatePath("/blog");
+  revalidatePath(`/blog/${slug}`);
+  revalidatePath("/admin/posts");
+  revalidatePath("/events");
+
+  if (redirectTarget) redirect(redirectTarget);
+  return ok("Artikel blog berhasil disimpan.");
+}
+
+export async function deletePost(id: number): Promise<FormState> {
+  const denied = await guard();
+  if (denied) return denied;
+  if (!id) return fail("ID artikel tidak valid.");
+
+  await db.delete(posts).where(eq(posts.id, id));
+  revalidatePath("/blog");
+  revalidatePath("/admin/posts");
+  return ok("Artikel berhasil dihapus.");
+}
+

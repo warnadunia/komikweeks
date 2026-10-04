@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, CalendarRange, LayoutDashboard, ReceiptText } from "lucide-react";
+import { BookOpen, CalendarRange, LayoutDashboard, Newspaper, ReceiptText } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -9,6 +9,7 @@ const ITEMS = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/events", label: "Edisi Event", icon: CalendarRange },
   { href: "/admin/series", label: "Seri & Chapter", icon: BookOpen },
+  { href: "/admin/posts", label: "Blog & Kabar", icon: Newspaper },
   { href: "/admin/purchases", label: "Transaksi Koin", icon: ReceiptText },
 ];
 

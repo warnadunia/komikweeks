@@ -1,6 +1,6 @@
 import { and, asc, desc, eq, inArray, ne, or, sql } from "drizzle-orm";
 import { db } from "@/db";
-import { chapters, events, guests, purchases, schedules, series, wallets } from "@/db/schema";
+import { chapters, events, guests, purchases, schedules, series, wallets, posts } from "@/db/schema";
 
 /* ---------------------------------- events --------------------------------- */
 
@@ -187,4 +187,119 @@ export async function getEventsOrNone() {
   return all.length > 0 ? all : null;
 }
 
+/* ---------------------------------- posts / blog --------------------------- */
+
+export type PostCardData = {
+  id: number;
+  slug: string;
+  title: string;
+  excerpt: string | null;
+  content: string;
+  coverImage: string | null;
+  category: string;
+  author: string;
+  isPublished: boolean;
+  publishedAt: Date;
+  eventId: number | null;
+  eventName: string | null;
+  eventSlug: string | null;
+  eventEdition: string | null;
+};
+
+export async function getPublishedPosts(options?: {
+  eventId?: number | null;
+  category?: string;
+  limit?: number;
+}): Promise<PostCardData[]> {
+  const conditions = [eq(posts.isPublished, true)];
+
+  if (options?.eventId !== undefined) {
+    if (options.eventId === null) {
+      conditions.push(sql`${posts.eventId} is null`);
+    } else {
+      conditions.push(eq(posts.eventId, options.eventId));
+    }
+  }
+
+  if (options?.category && options.category !== "all") {
+    conditions.push(eq(posts.category, options.category));
+  }
+
+  const query = db
+    .select({
+      id: posts.id,
+      slug: posts.slug,
+      title: posts.title,
+      excerpt: posts.excerpt,
+      content: posts.content,
+      coverImage: posts.coverImage,
+      category: posts.category,
+      author: posts.author,
+      isPublished: posts.isPublished,
+      publishedAt: posts.publishedAt,
+      eventId: posts.eventId,
+      eventName: events.name,
+      eventSlug: events.slug,
+      eventEdition: events.edition,
+    })
+    .from(posts)
+    .leftJoin(events, eq(posts.eventId, events.id))
+    .where(and(...conditions))
+    .orderBy(desc(posts.publishedAt));
+
+  if (options?.limit) {
+    return query.limit(options.limit);
+  }
+
+  return query;
+}
+
+export async function getPostBySlug(slug: string): Promise<PostCardData | null> {
+  const rows = await db
+    .select({
+      id: posts.id,
+      slug: posts.slug,
+      title: posts.title,
+      excerpt: posts.excerpt,
+      content: posts.content,
+      coverImage: posts.coverImage,
+      category: posts.category,
+      author: posts.author,
+      isPublished: posts.isPublished,
+      publishedAt: posts.publishedAt,
+      eventId: posts.eventId,
+      eventName: events.name,
+      eventSlug: events.slug,
+      eventEdition: events.edition,
+    })
+    .from(posts)
+    .leftJoin(events, eq(posts.eventId, events.id))
+    .where(and(eq(posts.slug, slug), eq(posts.isPublished, true)))
+    .limit(1);
+
+  return rows[0] ?? null;
+}
+
+export async function getPostsForEvent(eventId: number, limit = 6): Promise<PostCardData[]> {
+  return getPublishedPosts({ eventId, limit });
+}
+
+export async function getAllPostsAdmin() {
+  return db
+    .select({
+      post: posts,
+      eventName: events.name,
+      eventEdition: events.edition,
+    })
+    .from(posts)
+    .leftJoin(events, eq(posts.eventId, events.id))
+    .orderBy(desc(posts.publishedAt));
+}
+
+export async function getPostByIdAdmin(id: number) {
+  const [row] = await db.select().from(posts).where(eq(posts.id, id)).limit(1);
+  return row ?? null;
+}
+
 export { or };
+

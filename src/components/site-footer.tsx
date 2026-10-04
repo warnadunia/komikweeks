@@ -28,7 +28,7 @@ export function SiteFooter() {
               panggung Comic Week.
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-10 sm:gap-16">
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 sm:gap-12">
             <div>
               <p className="font-mono text-[10px] tracking-[0.3em] text-paper/40 uppercase">Baca</p>
               <ul className="mt-3 space-y-2 text-sm font-semibold">
@@ -48,6 +48,14 @@ export function SiteFooter() {
                 </li>
                 <li><Link className="hover:text-acid" href="/events/comic-week-2025">Arsip 2025</Link></li>
                 <li><Link className="hover:text-acid" href="/events/comic-week-2024">Arsip 2024</Link></li>
+              </ul>
+            </div>
+            <div className="col-span-2 sm:col-span-1">
+              <p className="font-mono text-[10px] tracking-[0.3em] text-paper/40 uppercase">Kabar</p>
+              <ul className="mt-3 space-y-2 text-sm font-semibold">
+                <li><Link className="hover:text-acid" href="/blog">Warta & Artikel</Link></li>
+                <li><Link className="hover:text-acid" href="/blog?category=Pengumuman">Pengumuman</Link></li>
+                <li><Link className="hover:text-acid" href="/blog?category=Kegiatan">Kegiatan Event</Link></li>
               </ul>
             </div>
           </div>

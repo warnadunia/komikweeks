@@ -173,3 +173,33 @@ export const purchases = pgTable(
     uniqueIndex("purchases_visitor_chapter_idx").on(t.visitorKey, t.chapterId),
   ],
 );
+
+export const posts = pgTable(
+  "posts",
+  {
+    id: serial("id").primaryKey(),
+    slug: varchar("slug", { length: 140 }).notNull().unique(),
+    title: varchar("title", { length: 220 }).notNull(),
+    excerpt: text("excerpt"),
+    content: text("content").notNull(),
+    coverImage: varchar("cover_image", { length: 500 }),
+    category: varchar("category", { length: 60 }).notNull().default("general"), // general | kegiatan | pengumuman | liputan
+    eventId: integer("event_id").references(() => events.id, {
+      onDelete: "set null",
+    }),
+    author: varchar("author", { length: 120 }).notNull().default("Redaksi Comic Week"),
+    isPublished: boolean("is_published").notNull().default(true),
+    publishedAt: timestamp("published_at").defaultNow().notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (t) => [
+    index("posts_event_idx").on(t.eventId),
+    index("posts_category_idx").on(t.category),
+    index("posts_published_idx").on(t.isPublished, t.publishedAt),
+  ],
+);
+
+export type Post = typeof posts.$inferSelect;
+export type NewPost = typeof posts.$inferInsert;
+

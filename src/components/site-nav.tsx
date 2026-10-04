@@ -1,4 +1,4 @@
-import { BookOpen, CalendarDays, Menu, X } from "lucide-react";
+import { BookOpen, CalendarDays, Menu, Newspaper, X } from "lucide-react";
 import Link from "next/link";
 import { getFeaturedEvent, getWallet } from "@/lib/queries";
 import { getVisitorKey } from "@/lib/visitor";
@@ -25,6 +25,7 @@ export async function SiteNav() {
 
   const links = [
     { href: "/comics", label: "Baca Komik", icon: BookOpen },
+    { href: "/blog", label: "Kabar", icon: Newspaper },
     ...(featured
       ? [{ href: `/events/${featured.slug}`, label: featured.name, icon: CalendarDays }]
       : []),
