@@ -15,12 +15,12 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { formatIDR, ProductCard } from "@/components/product-card";
+import { ProductCard } from "@/components/product-card";
 import { Reveal } from "@/components/reveal";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteNav } from "@/components/site-nav";
 import { getProductBySlug, getPublishedProducts } from "@/lib/queries";
-import { cn } from "@/lib/utils";
+import { cn, formatIDR } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 

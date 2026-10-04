@@ -21,13 +21,13 @@ export default async function AdminPanelLayout({ children }: { children: ReactNo
       {/* sidebar desktop */}
       <aside className="sticky top-0 hidden h-screen flex-col border-r-3 border-paper/20 bg-ink-soft lg:flex">
         <Link href="/admin" className="flex items-center gap-3 border-b-2 border-paper/15 px-5 py-5">
-          <span className="flex size-10 items-center justify-center border-3 border-paper bg-acid font-display text-sm text-ink shadow-[3px_3px_0_#f5f1e8]">
-            CW
-          </span>
+          <div className="relative size-10 overflow-hidden border-2 border-paper bg-white shadow-[3px_3px_0_#f5f1e8] shrink-0">
+            <img src="/logo.png" alt="KomikWeeks Logo" className="size-full object-contain" />
+          </div>
           <span className="leading-none">
-            <span className="block font-display text-sm text-paper">RUANG REDAKSI</span>
-            <span className="mt-1 block font-mono text-[9px] tracking-[0.3em] text-paper/45 uppercase">
-              Comic Week CMS
+            <span className="block font-display text-sm text-paper">KOMIKWEEKS</span>
+            <span className="mt-1 block font-mono text-[9px] tracking-[0.2em] text-paper/50 uppercase">
+              Yogyakarta Komik Weeks
             </span>
           </span>
         </Link>

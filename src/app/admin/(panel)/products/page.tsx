@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ArrowUpRight, ExternalLink, Globe, Plus, ShoppingBag, Store, Tag } from "lucide-react";
 import Link from "next/link";
 import { getAllProductsAdmin } from "@/lib/queries";
-import { formatIDR } from "@/components/product-card";
+import { formatIDR } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 

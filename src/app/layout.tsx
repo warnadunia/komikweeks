@@ -32,11 +32,15 @@ const marker = Permanent_Marker({
 
 export const metadata: Metadata = {
   title: {
-    default: "COMIC WEEK — Festival Komik Tahunan Indonesia",
-    template: "%s — COMIC WEEK",
+    default: "KomikWeeks — Yogyakarta Komik Weeks",
+    template: "%s — KomikWeeks",
   },
   description:
-    "Festival komik tahunan terbesar di Indonesia. Baca komik orisinal Comic Week panel demi panel, buka chapter dengan Koin Tinta, dan temui kreatornya setiap November di Jakarta.",
+    "KomikWeeks — Yogyakarta Komik Weeks. Festival komik tahunan, baca komik orisinal vertikal, artshop merchandise resmi, dan temui kreatornya.",
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

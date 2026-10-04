@@ -18,14 +18,22 @@ export function SiteFooter() {
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
         <div className="flex flex-col items-start justify-between gap-10 md:flex-row">
           <div>
-            <p className="font-display text-5xl leading-[0.9] text-paper sm:text-7xl">
-              COMIC
-              <br />
-              <span className="text-acid">WEEK</span>
-            </p>
+            <div className="flex items-center gap-3">
+              <div className="size-14 overflow-hidden border-3 border-paper bg-white shadow-[4px_4px_0_#c9f73a] shrink-0">
+                <img src="/logo.png" alt="KomikWeeks Logo" className="size-full object-contain" />
+              </div>
+              <div>
+                <p className="font-display text-3xl leading-[0.9] text-paper sm:text-4xl">
+                  Komik<span className="text-acid">Weeks</span>
+                </p>
+                <p className="font-mono text-[10px] tracking-[0.2em] text-paper/60 uppercase mt-1">
+                  Yogyakarta Komik Weeks
+                </p>
+              </div>
+            </div>
             <p className="mt-4 max-w-xs font-mono text-xs leading-relaxed tracking-wider text-paper/50">
-              Festival komik tahunan. Semua komik di situs ini adalah karya resmi yang lahir dari
-              panggung Comic Week.
+              Festival komik tahunan Yogyakarta. Semua komik di situs ini adalah karya resmi yang lahir dari
+              panggung KomikWeeks.
             </p>
           </div>
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-4 sm:gap-8">
@@ -70,7 +78,7 @@ export function SiteFooter() {
           </div>
         </div>
         <div className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t-2 border-dashed border-paper/20 pt-6 font-mono text-[10px] tracking-[0.2em] text-paper/40 uppercase">
-          <span>© 2026 Comic Week Festival — Jakarta</span>
+          <span>© 2026 KomikWeeks — Yogyakarta Komik Weeks</span>
           <span className="inline-flex items-center gap-4">
             <span>Ditenagai tinta, kopi, dan deadline</span>
             <Link href="/admin" className="text-paper/25 transition-colors hover:text-acid">

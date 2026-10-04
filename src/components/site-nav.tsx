@@ -7,13 +7,17 @@ import { NavMenuButton } from "@/components/nav-menu";
 
 export function ComicWeekLogo({ href = "/" }: { href?: string }) {
   return (
-    <Link href={href} className="group flex items-center gap-2">
-      <span className="flex size-9 items-center justify-center border-3 border-paper bg-acid font-display text-base text-ink shadow-[3px_3px_0_#f5f1e8] transition-transform group-hover:-rotate-6">
-        CW
-      </span>
+    <Link href={href} className="group flex items-center gap-2.5">
+      <div className="relative size-10 overflow-hidden border-2 border-paper bg-white shadow-[3px_3px_0_#c9f73a] transition-transform group-hover:-rotate-3 shrink-0">
+        <img src="/logo.png" alt="KomikWeeks Logo" className="size-full object-contain" />
+      </div>
       <span className="hidden flex-col leading-none sm:flex">
-        <span className="font-display text-sm tracking-wide text-paper">COMIC WEEK</span>
-        <span className="font-mono text-[9px] tracking-[0.3em] text-paper/60">FESTIVAL KOMIK TAHUNAN</span>
+        <span className="font-display text-base tracking-wide text-paper group-hover:text-acid transition-colors">
+          KomikWeeks
+        </span>
+        <span className="font-mono text-[9px] tracking-[0.2em] text-paper/60 uppercase">
+          Yogyakarta Komik Weeks
+        </span>
       </span>
     </Link>
   );

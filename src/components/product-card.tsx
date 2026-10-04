@@ -3,15 +3,7 @@
 import { ExternalLink, MessageCircle, ShoppingBag, Sparkles, Tag } from "lucide-react";
 import Link from "next/link";
 import type { ProductCardData } from "@/lib/queries";
-import { cn } from "@/lib/utils";
-
-export function formatIDR(amount: number): string {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(amount);
-}
+import { cn, formatIDR } from "@/lib/utils";
 
 export function ProductCard({ p }: { p: ProductCardData }) {
   const isPreOrder = p.stockStatus === "pre_order";
