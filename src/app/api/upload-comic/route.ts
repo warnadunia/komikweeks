@@ -4,7 +4,7 @@ import { getAdminUser } from "@/lib/auth";
 
 const BLOB_TOKEN =
   process.env.BLOB_READ_WRITE_TOKEN ||
-  "vercel_blob_rw_8n6PN0ekjPWYUNOx_ftswroj161WYLXKTZKEf2Q2yebLhOk";
+  "vercel_blob_rw_gnwNEPJGRewWP4LM_Bj8V90C8uBvwXo6kCbGd5hoZtS1TDs";
 
 export const dynamic = "force-dynamic";
 
