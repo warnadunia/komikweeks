@@ -8,6 +8,7 @@ import { deleteChapter, upsertChapter } from "@/lib/admin-actions";
 import { ActionForm, DeleteButton } from "@/components/admin/action-form";
 import { CheckRow, Field, inputCls, SectionCard } from "@/components/admin/fields";
 import { R2Uploader } from "@/components/admin/r2-uploader";
+import { BlobUploader } from "@/components/admin/blob-uploader";
 
 export type ChapterRow = {
   id: number;
@@ -118,29 +119,29 @@ export function PagesEditor({
         </button>
       </div>
 
-      {/* R2 Uploader Box */}
+      {/* Vercel Blob Uploader Box */}
       <div className="mt-3">
-        <R2Uploader
-          folder="chapters"
+        <BlobUploader
+          folder="comics"
+          seriesSlug="comic"
           multiple
-          label="Unggah Halaman Komik ke Cloudflare R2 (Otomatis WebP 80%)"
+          label="Upload Batch Halaman Komik ke Vercel Blob (Otomatis WebP 80%)"
           onSuccess={(results) => {
             const newMediaList: MediaItem[] = results.map((r) => ({
-              src: r.publicUrl,
-              label: `[R2] ${r.key.split("/").pop()} (${r.width}×${r.height})`,
+              src: r.url,
+              label: `[Blob] ${r.filename} (${r.width}×${r.height})`,
               w: r.width,
               h: r.height,
             }));
             setAvailableMedia((prev) => [...newMediaList, ...prev]);
 
-            // Jika belum ada genSrc terpilih yang punya dimensi, jadikan yang baru
             if (results[0]) {
-              setGenSrc(results[0].publicUrl);
+              setGenSrc(results[0].url);
             }
 
-            // Tambahkan langsung ke daftar halaman bab
+            // Tambahkan langsung ke daftar halaman bab sesuai urutan numerik (01, 02, ...)
             const newPages: PageSlice[] = results.map((r) => ({
-              src: r.publicUrl,
+              src: r.url,
               pos: 50,
               ar: r.aspectRatio,
             }));

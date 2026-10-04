@@ -6,6 +6,7 @@ import type { MediaItem } from "@/lib/media";
 import { ActionForm } from "@/components/admin/action-form";
 import { CheckRow, Field, inputCls, SectionCard } from "@/components/admin/fields";
 import { R2Uploader } from "@/components/admin/r2-uploader";
+import { BlobUploader } from "@/components/admin/blob-uploader";
 
 export type SeriesFormDefaults = {
   id?: number;
@@ -165,12 +166,13 @@ export function SeriesForm({
                 </select>
               </Field>
             )}
-            <R2Uploader
+            <BlobUploader
               folder="covers"
-              label="Unggah Sampul ke Cloudflare R2 (Otomatis WebP 80%)"
+              multiple={false}
+              label="Unggah Sampul ke Vercel Blob (Otomatis WebP 80%)"
               onSuccess={(results) => {
                 if (results[0]) {
-                  setCover(results[0].publicUrl);
+                  setCover(results[0].url);
                 }
               }}
             />
